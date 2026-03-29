@@ -1,7 +1,7 @@
 # SMAS — Social Media Account Security Monitoring System
 
 > Developed by Zoe Michael Katchy during SIWES industrial training at Octagon Cybersecurity Nig. Ltd.  
-> Project codename: **OCTA-SOCIALSAFE**
+> 
 
 ---
 
