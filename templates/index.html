@@ -1,0 +1,1069 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SMAS — Social Media Audit System</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg: #0a0c10;
+      --surface: #111318;
+      --surface2: #181c24;
+      --border: #232733;
+      --accent: #00e5ff;
+      --accent2: #7c3aed;
+      --text: #e8ecf2;
+      --muted: #6b7280;
+      --danger: #f87171;
+      --success: #34d399;
+      --warn: #fbbf24;
+      --font-head: 'Syne', sans-serif;
+      --font-mono: 'DM Mono', monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-mono);
+      min-height: 100vh;
+      padding: 0;
+    }
+
+    /* --- Background grid --- */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(0,229,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,229,255,0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .wrapper {
+      position: relative;
+      z-index: 1;
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 48px 24px 80px;
+    }
+
+    /* --- Header --- */
+    .header {
+      text-align: center;
+      margin-bottom: 48px;
+    }
+
+    .header .tag {
+      display: inline-block;
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      border: 1px solid var(--accent);
+      padding: 4px 12px;
+      margin-bottom: 20px;
+      opacity: 0.8;
+    }
+
+    .header h1 {
+      font-family: var(--font-head);
+      font-size: clamp(2rem, 6vw, 3.6rem);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+      background: linear-gradient(135deg, #e8ecf2 30%, var(--accent) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .header p {
+      margin-top: 14px;
+      color: var(--muted);
+      font-size: 13px;
+      letter-spacing: 0.03em;
+    }
+
+    /* --- Cards --- */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 32px;
+      margin-bottom: 24px;
+    }
+
+    .card-title {
+      font-family: var(--font-head);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 20px;
+    }
+
+    /* --- Consent --- */
+    #consentSection p {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.8;
+      margin-bottom: 8px;
+    }
+
+    #consentSection ul {
+      list-style: none;
+      margin: 16px 0 28px;
+    }
+
+    #consentSection ul li {
+      font-size: 13px;
+      color: var(--text);
+      padding: 8px 0 8px 20px;
+      border-bottom: 1px solid var(--border);
+      position: relative;
+    }
+
+    #consentSection ul li::before {
+      content: '▸';
+      position: absolute;
+      left: 0;
+      color: var(--accent);
+    }
+
+    /* --- Form Elements --- */
+    label {
+      display: block;
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    select, input[type="text"] {
+      width: 100%;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-family: var(--font-mono);
+      font-size: 14px;
+      padding: 12px 16px;
+      border-radius: 6px;
+      margin-bottom: 20px;
+      appearance: none;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    select:focus, input:focus {
+      border-color: var(--accent);
+    }
+
+    .field-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    @media (max-width: 560px) {
+      .field-row { grid-template-columns: 1fr; }
+    }
+
+    /* --- Questions --- */
+    .question-block {
+      margin-bottom: 22px;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .question-block label {
+      font-size: 13px;
+      letter-spacing: 0;
+      text-transform: none;
+      color: var(--text);
+      margin-bottom: 10px;
+      line-height: 1.5;
+    }
+
+    .question-block label span.qnum {
+      color: var(--accent);
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    /* --- Buttons --- */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 13px 28px;
+      border-radius: 6px;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #000;
+    }
+
+    .btn-primary:hover {
+      background: #33eeff;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 20px rgba(0,229,255,0.25);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--accent);
+      border: 1px solid var(--accent);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(0,229,255,0.06);
+    }
+
+    .btn-danger {
+      background: transparent;
+      color: var(--danger);
+      border: 1px solid var(--danger);
+    }
+
+    .btn-danger:hover {
+      background: rgba(248,113,113,0.08);
+    }
+
+    .btn-generate {
+      background: linear-gradient(135deg, var(--accent2), #a855f7);
+      color: #fff;
+      width: 100%;
+      justify-content: center;
+      padding: 16px;
+      font-size: 14px;
+      margin-top: 8px;
+    }
+
+    .btn-generate:hover {
+      opacity: 0.9;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 24px rgba(124,58,237,0.35);
+    }
+
+    .btn-generate:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+
+    /* --- Queue / Sessions list --- */
+    .sessions-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 22px;
+      height: 22px;
+      padding: 0 6px;
+      background: var(--accent);
+      color: #000;
+      font-size: 11px;
+      font-weight: 700;
+      border-radius: 100px;
+    }
+
+    .session-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin-bottom: 10px;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .session-item .si-info {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .session-item .si-platform {
+      font-family: var(--font-head);
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .session-item .si-meta {
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .session-item .si-score {
+      text-align: right;
+    }
+
+    .session-item .si-score .score-val {
+      font-family: var(--font-head);
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--accent);
+    }
+
+    .session-item .si-score .score-risk {
+      font-size: 11px;
+      letter-spacing: 0.06em;
+    }
+
+    .risk-excellent { color: var(--success); }
+    .risk-fair { color: var(--warn); }
+    .risk-poor { color: var(--danger); }
+
+    .empty-state {
+      text-align: center;
+      padding: 28px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    /* --- Divider --- */
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 24px 0;
+    }
+
+    /* --- Password Tools Section --- */
+    .tools-section {
+      margin-top: 40px;
+    }
+
+    .tools-divider {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .tools-divider span {
+      font-family: var(--font-head);
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      white-space: nowrap;
+    }
+
+    .tools-divider::before,
+    .tools-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    .pw-input-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .pw-input-row input {
+      flex: 1;
+      margin-bottom: 0;
+    }
+
+    .pw-input-row button {
+      flex-shrink: 0;
+      width: auto;
+      padding: 12px 18px;
+    }
+
+    .strength-bar-wrap {
+      margin-bottom: 16px;
+    }
+
+    .strength-bar-track {
+      height: 6px;
+      background: var(--surface2);
+      border-radius: 100px;
+      overflow: hidden;
+      margin-bottom: 8px;
+    }
+
+    .strength-bar-fill {
+      height: 100%;
+      border-radius: 100px;
+      transition: width 0.4s ease, background 0.4s ease;
+      width: 0%;
+    }
+
+    .strength-meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+    }
+
+    .strength-label { font-weight: 500; }
+    .strength-crack  { color: var(--muted); }
+
+    .strength-0 { background: #ef4444; width: 10%; }
+    .strength-1 { background: #f97316; width: 30%; }
+    .strength-2 { background: #eab308; width: 55%; }
+    .strength-3 { background: #22c55e; width: 78%; }
+    .strength-4 { background: #00e5ff; width: 100%; }
+
+    .strength-color-0 { color: #ef4444; }
+    .strength-color-1 { color: #f97316; }
+    .strength-color-2 { color: #eab308; }
+    .strength-color-3 { color: #22c55e; }
+    .strength-color-4 { color: #00e5ff; }
+
+    .feedback-list {
+      list-style: none;
+      margin-top: 8px;
+    }
+
+    .feedback-list li {
+      font-size: 12px;
+      color: var(--muted);
+      padding: 4px 0 4px 16px;
+      position: relative;
+    }
+
+    .feedback-list li::before {
+      content: '→';
+      position: absolute;
+      left: 0;
+      color: var(--warn);
+    }
+
+    .passphrase-result {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px 20px;
+      margin-top: 12px;
+      display: none;
+    }
+
+    .passphrase-value {
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--accent);
+      letter-spacing: 0.03em;
+      word-break: break-all;
+      margin-bottom: 8px;
+    }
+
+    .passphrase-meta {
+      font-size: 11px;
+      color: var(--muted);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .copy-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+
+    .copy-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+    .breach-result {
+      margin-top: 12px;
+      padding: 14px 18px;
+      border-radius: 8px;
+      font-size: 13px;
+      line-height: 1.6;
+      display: none;
+    }
+
+    .breach-safe    { background: rgba(52,211,153,0.08); border: 1px solid rgba(52,211,153,0.3); color: var(--success); }
+    .breach-found   { background: rgba(248,113,113,0.08); border: 1px solid rgba(248,113,113,0.3); color: var(--danger); }
+    .breach-error   { background: rgba(251,191,36,0.08);  border: 1px solid rgba(251,191,36,0.3);  color: var(--warn); }
+
+    .breach-count {
+      font-family: var(--font-head);
+      font-size: 20px;
+      font-weight: 800;
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .pw-tool-label {
+      font-size: 13px;
+      color: var(--text);
+      margin-bottom: 10px;
+      letter-spacing: 0;
+      text-transform: none;
+    }
+
+    .word-count-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .word-count-row label {
+      margin: 0;
+      white-space: nowrap;
+    }
+
+    .word-count-row input[type=range] {
+      flex: 1;
+      margin: 0;
+      padding: 0;
+      height: auto;
+      background: transparent;
+      border: none;
+      accent-color: var(--accent);
+    }
+
+    .word-count-val {
+      font-family: var(--font-head);
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--accent);
+      min-width: 20px;
+      text-align: center;
+    }
+
+    .privacy-note {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 10px;
+      padding: 8px 12px;
+      background: rgba(0,229,255,0.04);
+      border-left: 2px solid var(--accent);
+      border-radius: 0 4px 4px 0;
+    }
+  </style>
+</head>
+<body>
+<div class="wrapper">
+
+  <div class="header">
+    <div class="tag">SIWES Project</div>
+    <h1>SMAS</h1>
+    <p>Social Media Account Security Auditor — assess one or multiple accounts</p>
+  </div>
+
+  <!-- CONSENT -->
+  <div id="consentSection" class="card">
+    <div class="card-title">Terms &amp; Conditions</div>
+    <p>Before proceeding, please read and accept the following:</p>
+    <ul>
+      <li>You are the owner or authorized representative of the account(s) being assessed.</li>
+      <li>No account credentials or personal data are collected or stored by this tool.</li>
+      <li>You accept all liabilities resulting from your use of this tool.</li>
+      <li>The developers are not responsible for any misuse of assessment results.</li>
+    </ul>
+    <button class="btn btn-primary" onclick="startAssessment()">&#x2713; &nbsp;I Agree &amp; Continue</button>
+  </div>
+
+  <!-- ASSESSMENT FORM -->
+  <div id="assessmentSection" style="display:none;">
+
+    <div class="card">
+      <div class="card-title">Account Details</div>
+
+      <div class="field-row">
+        <div>
+          <label>Platform</label>
+          <select id="platform">
+            <option value="facebook">Facebook</option>
+            <option value="instagram">Instagram</option>
+            <option value="whatsapp">WhatsApp</option>
+          </select>
+        </div>
+        <div>
+          <label>Account Type</label>
+          <select id="account_type"></select>
+        </div>
+      </div>
+
+      <label>Account Handle / Name <span style="color:var(--muted);font-size:10px;text-transform:none;letter-spacing:0">(e.g. @username or page name)</span></label>
+      <input type="text" id="handle" placeholder="@yourhandle" />
+    </div>
+
+    <div class="card">
+      <div class="card-title">Security Questions</div>
+      <div id="questions"></div>
+
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="addToReport()">+ Add to Report</button>
+        <button class="btn btn-secondary" onclick="clearForm()">&#x21ba; &nbsp;Clear Form</button>
+      </div>
+    </div>
+
+    <!-- SESSIONS QUEUE -->
+    <div class="card">
+      <div class="sessions-header">
+        <div class="card-title" style="margin-bottom:0">Queued Assessments &nbsp;<span class="badge" id="sessionCount">0</span></div>
+      </div>
+
+      <div id="sessionsList">
+        <div class="empty-state">No assessments added yet. Fill in the form above and click <strong>+ Add to Report</strong>.</div>
+      </div>
+
+      <hr class="divider"/>
+
+      <button class="btn btn-generate" id="generateBtn" onclick="generateReport()" disabled>
+        &#9654; &nbsp;Generate Full Report
+      </button>
+    </div>
+
+
+    <!-- PASSWORD TOOLS -->
+    <div id="passwordToolsSection" class="tools-section" style="display:none;">
+
+      <div class="tools-divider"><span>Password Security Tools</span></div>
+
+      <!-- Strength Checker -->
+      <div class="card">
+        <div class="card-title">① Password Strength Checker</div>
+        <label class="pw-tool-label">Enter a password to evaluate its strength</label>
+        <div class="pw-input-row">
+          <input type="password" id="strengthInput" placeholder="Enter password..." oninput="checkStrength()" />
+          <button class="btn btn-secondary" onclick="toggleStrengthVisibility()" id="strengthToggle">Show</button>
+        </div>
+        <div class="strength-bar-wrap" id="strengthBarWrap" style="display:none;">
+          <div class="strength-bar-track">
+            <div class="strength-bar-fill" id="strengthBarFill"></div>
+          </div>
+          <div class="strength-meta">
+            <span class="strength-label" id="strengthLabel"></span>
+            <span class="strength-crack" id="strengthCrack"></span>
+          </div>
+          <ul class="feedback-list" id="strengthFeedback"></ul>
+        </div>
+      </div>
+
+      <!-- Passphrase Generator -->
+      <div class="card">
+        <div class="card-title">② Passphrase Generator</div>
+        <label class="pw-tool-label">Generate a strong, memorable passphrase using EFF's wordlist</label>
+        <div class="word-count-row">
+          <label>Word count</label>
+          <input type="range" id="wordCountSlider" min="4" max="8" value="5" oninput="updateWordCount(this.value)" />
+          <span class="word-count-val" id="wordCountVal">5</span>
+        </div>
+        <button class="btn btn-primary" onclick="generatePassphrase()">⟳ &nbsp;Generate Passphrase</button>
+        <div class="passphrase-result" id="passphraseResult">
+          <div class="passphrase-value" id="passphraseValue"></div>
+          <div class="passphrase-meta">
+            <span id="passphraseEntropy"></span>
+            <button class="copy-btn" onclick="copyPassphrase()">Copy</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Breach Checker -->
+      <div class="card">
+        <div class="card-title">③ Password Breach Checker</div>
+        <label class="pw-tool-label">Check if your password has appeared in known data breaches</label>
+        <div class="pw-input-row">
+          <input type="password" id="breachInput" placeholder="Enter password to check..." />
+          <button class="btn btn-secondary" onclick="toggleBreachVisibility()" id="breachToggle">Show</button>
+        </div>
+        <button class="btn btn-primary" onclick="checkBreach()">🔍 &nbsp;Check Breaches</button>
+        <div class="breach-result" id="breachResult"></div>
+        <p class="privacy-note">🔒 Privacy protected — your password is never transmitted. Only a partial hash is sent using the k-anonymity model (HaveIBeenPwned API).</p>
+      </div>
+
+    </div>
+  </div><!-- /assessmentSection -->
+
+</div><!-- /wrapper -->
+
+<script>
+// =============================================
+//  State
+// =============================================
+const sessions = []; // Array of { platform, accountType, handle, score, risk, recommendations }
+
+// =============================================
+//  Init
+// =============================================
+function startAssessment() {
+  document.getElementById("consentSection").style.display = "none";
+  document.getElementById("assessmentSection").style.display = "block";
+  loadAccountTypes();
+}
+
+// =============================================
+//  Account Types
+// =============================================
+async function loadAccountTypes() {
+  const platform = document.getElementById("platform").value;
+  const res = await fetch(`/account_types/${platform}`);
+  const data = await res.json();
+
+  const sel = document.getElementById("account_type");
+  sel.innerHTML = "";
+  for (let key in data) {
+    const opt = document.createElement("option");
+    opt.value = key;
+    opt.text = data[key];
+    sel.appendChild(opt);
+  }
+  loadQuestions();
+}
+
+// =============================================
+//  Questions
+// =============================================
+async function loadQuestions() {
+  const platform = document.getElementById("platform").value;
+  const accountType = document.getElementById("account_type").value;
+
+  const res = await fetch(`/questions/${platform}/${accountType}`);
+  const questions = await res.json();
+
+  const container = document.getElementById("questions");
+  container.innerHTML = "";
+
+  questions.forEach((q, idx) => {
+    const wrapper = document.createElement("div");
+    wrapper.className = "question-block";
+    wrapper.id = `qblock_${q.id}`;
+
+    // Store conditional info
+    if (q.conditional) {
+      wrapper.dataset.conditional = q.conditional;
+      wrapper.dataset.conditionalValue = q.conditional_value || "password";
+    }
+
+    const label = document.createElement("label");
+    label.innerHTML = `<span class="qnum">Q${idx + 1}</span>${q.question}`;
+
+    const select = document.createElement("select");
+    select.dataset.question = q.id;
+
+    for (let option in q.options) {
+      const opt = document.createElement("option");
+      opt.value = option;
+      opt.text = option.charAt(0).toUpperCase() + option.slice(1);
+      select.appendChild(opt);
+    }
+
+    // Trigger conditional visibility on auth_method change
+    if (q.id === "auth_method") {
+      select.addEventListener("change", () => toggleConditionals(select.value));
+      // Run once on load
+      setTimeout(() => toggleConditionals(select.value), 50);
+    }
+
+    wrapper.appendChild(label);
+    wrapper.appendChild(select);
+    container.appendChild(wrapper);
+  });
+}
+
+// =============================================
+//  Conditional Visibility
+// =============================================
+function toggleConditionals(authValue) {
+  document.querySelectorAll("[data-conditional]").forEach(block => {
+    const cond = block.dataset.conditional;
+    const condVal = block.dataset.conditionalValue || "password";
+
+    // Get current value of the controlling select
+    const controller = document.querySelector(`select[data-question="${cond}"]`);
+    const currentVal = controller ? controller.value : authValue;
+
+    block.style.display = (currentVal === condVal) ? "block" : "none";
+  });
+}
+
+// =============================================
+//  Add to Report
+// =============================================
+async function addToReport() {
+  const platform = document.getElementById("platform").value;
+  const accountType = document.getElementById("account_type").value;
+  const handle = document.getElementById("handle").value.trim() || "Unknown Account";
+
+  // Collect answers (only visible questions)
+  const answers = {};
+  document.querySelectorAll("select[data-question]").forEach(sel => {
+    const block = sel.closest(".question-block");
+    if (block && block.style.display === "none") return; // skip hidden conditionals
+    answers[sel.dataset.question] = sel.value;
+  });
+
+  const response = await fetch("/run_assessment", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ platform, account_type: accountType, answers })
+  });
+
+  const result = await response.json();
+
+  sessions.push({
+    platform: platform.charAt(0).toUpperCase() + platform.slice(1),
+    accountType: document.getElementById("account_type").options[document.getElementById("account_type").selectedIndex].text,
+    handle,
+    score: result.score,
+    risk: result.risk_level,
+    recommendations: result.recommendations
+  });
+
+  renderSessions();
+  clearForm();
+}
+
+// =============================================
+//  Render Sessions List
+// =============================================
+function renderSessions() {
+  const list = document.getElementById("sessionsList");
+  const count = document.getElementById("sessionCount");
+  const genBtn = document.getElementById("generateBtn");
+
+  count.textContent = sessions.length;
+  genBtn.disabled = sessions.length === 0;
+
+  if (sessions.length === 0) {
+    list.innerHTML = `<div class="empty-state">No assessments added yet.</div>`;
+    return;
+  }
+
+  list.innerHTML = sessions.map((s, i) => `
+    <div class="session-item">
+      <div class="si-info">
+        <div class="si-platform">${s.platform} &mdash; <span style="font-weight:400;font-size:13px">${s.accountType}</span></div>
+        <div class="si-meta">${s.handle}</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:16px">
+        <div class="si-score">
+          <div class="score-val">${s.score}<span style="font-size:12px;color:var(--muted)">/100</span></div>
+          <div class="score-risk risk-${s.risk.toLowerCase()}">${s.risk.toUpperCase()}</div>
+        </div>
+        <button class="btn btn-danger" style="padding:6px 12px;font-size:11px" onclick="removeSession(${i})">✕</button>
+      </div>
+    </div>
+  `).join("");
+}
+
+// =============================================
+//  Remove a Session
+// =============================================
+function removeSession(index) {
+  sessions.splice(index, 1);
+  renderSessions();
+}
+
+// =============================================
+//  Clear Form
+// =============================================
+function clearForm() {
+  document.getElementById("handle").value = "";
+  document.querySelectorAll("#questions select").forEach(s => s.selectedIndex = 0);
+  // Re-trigger conditional visibility
+  const authSel = document.querySelector('select[data-question="auth_method"]');
+  if (authSel) toggleConditionals(authSel.value);
+}
+
+// =============================================
+//  Generate Report Page
+// =============================================
+function generateReport() {
+  if (sessions.length === 0) return;
+
+  // Store sessions in sessionStorage for report page
+  sessionStorage.setItem("smas_sessions", JSON.stringify(sessions));
+  window.open("/report", "_blank");
+}
+
+// =============================================
+//  Event Listeners
+// =============================================
+document.getElementById("platform").addEventListener("change", loadAccountTypes);
+document.getElementById("account_type").addEventListener("change", loadQuestions);
+
+// =============================================
+//  Show Password Tools after consent
+// =============================================
+const _origStart = startAssessment;
+// Override startAssessment to also show tools
+function startAssessment() {
+  document.getElementById("consentSection").style.display = "none";
+  document.getElementById("assessmentSection").style.display = "block";
+  document.getElementById("passwordToolsSection").style.display = "block";
+  loadAccountTypes();
+}
+
+// =============================================
+//  Password Strength Checker
+// =============================================
+let strengthDebounce;
+function checkStrength() {
+  clearTimeout(strengthDebounce);
+  strengthDebounce = setTimeout(async () => {
+    const pw = document.getElementById("strengthInput").value;
+    const wrap = document.getElementById("strengthBarWrap");
+
+    if (!pw) { wrap.style.display = "none"; return; }
+    wrap.style.display = "block";
+
+    const res = await fetch("/check_strength", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ password: pw })
+    });
+    const data = await res.json();
+
+    const fill = document.getElementById("strengthBarFill");
+    fill.className = `strength-bar-fill strength-${data.score}`;
+
+    const label = document.getElementById("strengthLabel");
+    label.textContent = data.label;
+    label.className = `strength-label strength-color-${data.score}`;
+
+    document.getElementById("strengthCrack").textContent = `Cracks in: ${data.crack_time}`;
+
+    const feedbackEl = document.getElementById("strengthFeedback");
+    const items = [];
+    if (data.warning) items.push(data.warning);
+    data.feedback.forEach(f => items.push(f));
+    feedbackEl.innerHTML = items.map(i => `<li>${i}</li>`).join("");
+  }, 300);
+}
+
+function toggleStrengthVisibility() {
+  const input = document.getElementById("strengthInput");
+  const btn = document.getElementById("strengthToggle");
+  if (input.type === "password") {
+    input.type = "text"; btn.textContent = "Hide";
+  } else {
+    input.type = "password"; btn.textContent = "Show";
+  }
+}
+
+// =============================================
+//  Passphrase Generator
+// =============================================
+function updateWordCount(val) {
+  document.getElementById("wordCountVal").textContent = val;
+}
+
+async function generatePassphrase() {
+  const numWords = parseInt(document.getElementById("wordCountSlider").value);
+  const res = await fetch("/generate_passphrase", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ num_words: numWords })
+  });
+  const data = await res.json();
+
+  document.getElementById("passphraseValue").textContent = data.passphrase;
+  document.getElementById("passphraseEntropy").textContent = data.estimated_strength;
+  document.getElementById("passphraseResult").style.display = "block";
+}
+
+function copyPassphrase() {
+  const val = document.getElementById("passphraseValue").textContent;
+  navigator.clipboard.writeText(val).then(() => {
+    const btn = document.querySelector(".copy-btn");
+    btn.textContent = "Copied!";
+    setTimeout(() => btn.textContent = "Copy", 2000);
+  });
+}
+
+// =============================================
+//  Breach Checker
+// =============================================
+async function checkBreach() {
+  const pw = document.getElementById("breachInput").value;
+  const resultEl = document.getElementById("breachResult");
+
+  if (!pw) {
+    resultEl.className = "breach-result breach-error";
+    resultEl.style.display = "block";
+    resultEl.innerHTML = "Please enter a password to check.";
+    return;
+  }
+
+  resultEl.style.display = "block";
+  resultEl.className = "breach-result breach-error";
+  resultEl.innerHTML = "Checking...";
+
+  const res = await fetch("/check_breach", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ password: pw })
+  });
+  const data = await res.json();
+
+  if (data.error) {
+    resultEl.className = "breach-result breach-error";
+    resultEl.innerHTML = `⚠️ ${data.message}`;
+  } else if (data.breached) {
+    resultEl.className = "breach-result breach-found";
+    resultEl.innerHTML = `
+      <span class="breach-count">⚠️ ${data.breach_count.toLocaleString()} breaches</span>
+      ${data.message}
+    `;
+  } else {
+    resultEl.className = "breach-result breach-safe";
+    resultEl.innerHTML = `✅ ${data.message}`;
+  }
+}
+
+function toggleBreachVisibility() {
+  const input = document.getElementById("breachInput");
+  const btn = document.getElementById("breachToggle");
+  if (input.type === "password") {
+    input.type = "text"; btn.textContent = "Hide";
+  } else {
+    input.type = "password"; btn.textContent = "Show";
+  }
+}
+
+</script>
+</body>
+</html>

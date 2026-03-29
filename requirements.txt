@@ -1,0 +1,3 @@
+flask==3.0.3
+zxcvbn==4.4.28
+xkcdpass==1.19.9

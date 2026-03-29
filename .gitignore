@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+
+# Virtual environments
+venv/
+env/
+.env/
+.venv/
+
+# Generated reports
+smas_report.txt
+*.pdf
+
+# Flask
+instance/
+.webassets-cache
+
+# IDE / editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*.DS_Store
+
+# Logs
+*.log
+
+# Distribution / build
+dist/
+build/
+*.egg-info/
+files.zip
